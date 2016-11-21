@@ -18,39 +18,48 @@ function getSheet(sheetName) {
   });
 }
 
-api.get('/cta', function() {
+api.get('/calls', function() {
   return getSheet('Weekly Call to Action').then(({ values }) => {
-    let current = [];
-    let previous = [];
-    let active = current;
+    let calls = [];
+    let isCurrent = true;
     // Skip header
-    values.slice(1).forEach(([ cta, script, notes ]) => {
-      if (cta.indexOf('PREVIOUS CALLS') !== -1) {
-        active = previous;
+    values.slice(1).forEach(([ title, content, notes ]) => {
+      if (title.indexOf('PREVIOUS CALLS') !== -1) {
+        isCurrent = false;
         return;
       }
 
-      active.push({ cta, script, notes });
+      calls.push({ title, content, notes, isCurrent });
     });
 
-    return { current, previous };
+    return {
+      data: calls.map((attributes, id) => {
+        return { type: 'calls', id, attributes };
+      })
+    };
   }).catch((err) => {
     return { error: `Failed to get data: ${err}` };
   });
 });
 
-api.get('/leadership', function() {
+api.get('/leaders', function() {
   return getSheet('Contact Info Party Leadership ').then(({ values }) => {
-    // Skip header
-    return values.slice(1).map(([ title, party, name, districtNum, dcNum ]) => {
-      return {
-        title,
-        party,
-        name,
-        districtNum: normalizePhoneNumber(districtNum),
-        dcNum: normalizePhoneNumber(dcNum)
-      };
-    });
+    return {
+      // Skip header
+      data: values.slice(1).map(([ title, party, name, districtNum, dcNum ], id) => {
+        return {
+          type: 'leaders',
+          id,
+          attributes: {
+            title,
+            party,
+            name,
+            districtNum: normalizePhoneNumber(districtNum),
+            dcNum: normalizePhoneNumber(dcNum)
+          }
+        };
+      })
+    };
   }).catch((err) => {
     return { error: `Failed to get data: ${err}` };
   });
@@ -62,38 +71,44 @@ api.get('/senators', function() {
     // so we need to be a little smarter about how many rows to skip
     let headerIndex = values.find(([ state ]) => state === 'state');
     values = values.slice(headerIndex);
-    return values.map((row) => {
-      let [
-        state,
-        ,
-        lastName,
-        firstName,
-        party,
-        districtAddressLine1,
-        districtAddressLine2,
-        districtAddressLine3,
-        districtPhone,
-        dcAddress,
-        dcPhone,
-        email,
-        website,
-      ] = row;
+    return {
+      data: values.map((row, id) => {
+        let [
+          state,
+          ,
+          lastName,
+          firstName,
+          party,
+          districtAddressLine1,
+          districtAddressLine2,
+          districtAddressLine3,
+          districtPhone,
+          dcAddress,
+          dcPhone,
+          email,
+          website,
+        ] = row;
 
-      return {
-        state,
-        lastName,
-        firstName,
-        party,
-        districtAddressLine1,
-        districtAddressLine2,
-        districtAddressLine3,
-        districtPhone: normalizePhoneNumber(districtPhone),
-        dcAddress,
-        dcPhone: normalizePhoneNumber(dcPhone),
-        email,
-        website
-      };
-    });
+        return {
+          type: 'senators',
+          id,
+          attributes: {
+            state,
+            lastName,
+            firstName,
+            party,
+            districtAddressLine1,
+            districtAddressLine2,
+            districtAddressLine3,
+            districtPhone: normalizePhoneNumber(districtPhone),
+            dcAddress,
+            dcPhone: normalizePhoneNumber(dcPhone),
+            email,
+            website
+          }
+        };
+      })
+    };
   }).catch((err) => {
     return { error: `Failed to get data: ${err}` };
   });
@@ -105,36 +120,42 @@ api.get('/reps', function() {
     // so we need to be a little smarter about how many rows to skip
     let headerIndex = values.find(([ , prefix ]) => prefix === 'Prefix');
     values = values.slice(headerIndex);
-    return values.map((row) => {
-      let [
-        ,
-        firstName,
-        middleName,
-        lastName,
-        suffix,
-        website,
-        districtAddressLine1,
-        districtAddressLine2,
-        districtAddressLine3,
-        districtPhone,
-        dcAddress,
-        party
-      ] = row;
+    return {
+      data: values.map((row, id) => {
+        let [
+          ,
+          firstName,
+          middleName,
+          lastName,
+          suffix,
+          website,
+          districtAddressLine1,
+          districtAddressLine2,
+          districtAddressLine3,
+          districtPhone,
+          dcAddress,
+          party
+        ] = row;
 
-      return {
-        firstName,
-        middleName,
-        lastName,
-        suffix,
-        website,
-        districtAddressLine1,
-        districtAddressLine2,
-        districtAddressLine3,
-        districtPhone: normalizePhoneNumber(districtPhone),
-        dcAddress,
-        party
-      };
-    });
+        return {
+          type: 'reps',
+          id,
+          attributes: {
+            firstName,
+            middleName,
+            lastName,
+            suffix,
+            website,
+            districtAddressLine1,
+            districtAddressLine2,
+            districtAddressLine3,
+            districtPhone: normalizePhoneNumber(districtPhone),
+            dcAddress,
+            party
+          }
+        };
+      })
+    };
   }).catch((err) => {
     return { error: `Failed to get data: ${err}` };
   });
