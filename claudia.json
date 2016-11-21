@@ -1,0 +1,11 @@
+{
+  "lambda": {
+    "role": "hisproblem-api-executor",
+    "name": "hisproblem-api",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "mhiu234b0l",
+    "module": "web"
+  }
+}

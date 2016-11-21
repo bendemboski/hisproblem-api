@@ -1,0 +1,34 @@
+{
+  "name": "hisproblem-api",
+  "version": "1.0.0",
+  "description": "Data access API for hisproblemnow",
+  "main": "web.js",
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "claudia": "^2.1.0"
+  },
+  "scripts": {
+    "transpile": "babel src -d lib",
+    "deploy": "npm run transpile && ./node_modules/.bin/claudia update --version stage",
+    "release": "./node_modules/.bin/claudia set-version --version prod"
+  },
+  "author": "Ben Demboski <demboskb@gmail.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "babel-core": "^6.17.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
+    "claudia-api-builder": "^2.0.1",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1"
+  },
+  "files": [
+    "lib",
+    "web.js"
+  ],
+  "repository": "https://github.com/bendemboski/hisproblemnow-api",
+  "bugs": {
+    "url": "https://github.com/bendemboski/hisproblemnow-api/issues"
+  },
+  "homepage": "https://github.com/bendemboski/hisproblemnow-api#readme"
+}
