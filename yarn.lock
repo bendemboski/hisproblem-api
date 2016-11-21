@@ -1434,6 +1434,10 @@ peek-stream@^1.1.0:
     duplexify "^3.0.1"
     through2 "^0.5.1"
 
+phone-formatter:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/phone-formatter/-/phone-formatter-0.0.2.tgz#f3626c7d274860f014f70f43a87566a16b0e7ace"
+
 pinkie-promise@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/pinkie-promise/-/pinkie-promise-2.0.1.tgz#2135d6dfa7a358c069ac9b178776288228450ffa"
